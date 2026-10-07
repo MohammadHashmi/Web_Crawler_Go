@@ -22,10 +22,32 @@ func bfs_on_links(){
 
 	neighbors := findNeighbors("https://httpbin.org/links/10/0")
 
-	visited = append(visited, neighbors...)
-	results = append(results, neighbors...)
+	//visited = append(visited, neighbors...)
+	//results = append(results, neighbors...)
 	queue = append(queue, neighbors...)
+
 	fmt.Println(queue)
+	x := queue[0]
+	visited = append(visited, x)
+	queue = queue[1:]
+
+	for queue:
+		curr := queue[0]
+		queue = queue[1:]
+		results = append(results, curr)
+
+		y:= queue[0]
+		for y {
+			if !slice.Contains(visited, y) {
+				append(visited, y)
+				append(queue, y)
+			}
+			
+		}
+
+
+
+	fmt.Println(queue, x)
 }
 
 func findNeighbors(link string) []string {
