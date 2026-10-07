@@ -1,5 +1,6 @@
 package main
 
+// Imports
 import (
 	"fmt"
 	"log"
@@ -8,32 +9,54 @@ import (
 	"golang.org/x/net/html"
 )
 
+// Main Function
 func main() {
-	res, err := http.Get("https://httpbin.org/links/10/0")
+	bfs_on_links()
+}
+
+func bfs_on_links(){
+	//Defining data structures needed for traversal
+	visited := []string{}
+	results := []string{}
+	queue := []string{}
+
+	neighbors := findNeighbors("https://httpbin.org/links/10/0")
+
+	visited = append(visited, neighbors...)
+	results = append(results, neighbors...)
+	queue = append(queue, neighbors...)
+	fmt.Println(queue)
+}
+
+func findNeighbors(link string) []string {
+	neighbors := []string{}
+
+	// Testing parsing on httpbin
+	res, err := http.Get(link)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer res.Body.Close()
-	//..body, err := io.ReadAll(res.Body)
 
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
+	// Parse the html of the response body
 	doc, err := html.Parse(res.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+		// Iterate through every element in the html
 	for n := range doc.Descendants() {
+		// If the type is "a" and it's a link (href) print the value of the link
 		if n.Type == html.ElementNode && n.Data == "a" {
 			for _, v := range n.Attr {
+				//TODO: Absolute links?
 				if v.Key == "href" {
-					fmt.Println(v.Val)
+					neighbors = append(neighbors, v.Val)
 					break
 				}
 			}
 		}
 	}
-	fmt.Println("testing")
+	return neighbors
 }
